@@ -8,6 +8,7 @@ int checkEntExt(int boolean,FILE *fp);
 int firstWord(int boolean,FILE *fp);
 int checkFirstWord(int boolean,FILE *fp);
 int checkExtEntrLable(int boolean,FILE *fp);
+
 void main()
 {
     FILE *fp;
