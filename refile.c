@@ -9,8 +9,6 @@ int main()
     readFileToArray(copyFile,fptr);
     fclose(fptr);
     return 0;
-
-   
 }
 void readFileToArray(char copyFile[50][50],FILE *fptr)
 {
