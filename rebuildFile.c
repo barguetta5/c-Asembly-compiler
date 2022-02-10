@@ -10,6 +10,8 @@ void *setLine(char line[lengthLine]);
     char line[lengthLine];
     char *buffer;
 	char *ptr;
+    int i,j;
+    int spacesCounter;
 
     buffer = (char*)malloc(1000*sizeof(char));
     memset(buffer,0,1000*sizeof(char));
@@ -37,6 +39,22 @@ void *setLine(char line[lengthLine]);
             
         }
         fclose(fptr);
+        for ( i = 0; i < 50; i++)
+        {
+            if (buffer[i] == '\t')
+            {
+                    buffer[i] = ' ';     
+            }  
+            if (buffer[i] == ' ' &&buffer[i+1] == ' ' )
+            {
+                j = i;
+                j++;
+                buffer[i] = buffer[j];
+                i++;          
+            }  
+            printf("%c",buffer[i]);      
+        }
+        
         fptr =  fopen("bar2.TXT","w");
         fprintf(fptr,"%s",buffer);
         fclose(fptr);
