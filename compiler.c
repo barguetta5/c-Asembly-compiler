@@ -8,14 +8,14 @@ int checkEntExt(int boolean,FILE *fp);
 int firstWord(int boolean,FILE *fp);
 int checkFirstWord(int boolean,FILE *fp);
 int checkExtEntrLable(int boolean,FILE *fp);
-void main()
-{
-    FILE *fp;
-    fp = fopen(fileName,"r"); 
-    //checkExtEntrLable(1,fp);
-    //printf("bla blab bala",checkEntExt(1,fp));
-    fclose(fp);
-}
+// void main()
+// {
+//     FILE *fp;
+//     fp = fopen(fileName,"r"); 
+//     //checkExtEntrLable(1,fp);
+//     //printf("bla blab bala",checkEntExt(1,fp));
+//     fclose(fp);
+// }
 int erorFile(FILE *fp)
 {
     int boolean = 1;

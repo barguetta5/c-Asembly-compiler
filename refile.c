@@ -1,111 +1,111 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "compiler.c"
 
-void readFileToArray(char copyFile[50][50],FILE *fptr);
+#define LSIZ 80 
+#define RSIZ 30 
+static char line[RSIZ][LSIZ];
+static int length;
+void readFileToArray2();
+void arraySet();
+//void readFileToArray();
 int main()
 {
-    FILE *fptr;
-    char copyFile[50][50];
-    readFileToArray(copyFile,fptr);
-    fclose(fptr);
-    return 0;
+    int i;
+    readFileToArray2();
+    arraySet();
+
+//    for( i = 0; i < 4; ++i)
+//     {
+//         printf(" %s\n", line[i]);
+//     }
+//     printf("\n");
+   return 0;
 }
-void readFileToArray(char copyFile[50][50],FILE *fptr)
+void readFileToArray2()
 {
-    char filename[30] = "b.txt";
-    char c;
-    int i = 0,j=0;
-    int saveSpace = 0;
-  
-  
-    // Open file
-    fptr = fopen(filename, "r");
-    if (fptr == NULL)
-    {
-        printf("Cannot open file \n");
-        exit(0);
+    
+	char fname[20] = "bar2.txt";
+    FILE *fptr = NULL; 
+    int i = 0;
+    fptr = fopen(fname, "r");
+    while(fgets(line[i], LSIZ, fptr)) 
+	{
+        // line[i][strlen(line[i]) - 1] = '\0';
+        i++;
+           
     }
-  
-    // Read contents from file
-    c = fgetc(fptr);
-    while (c != EOF)
-    {
-        //printf ("%c", c);
-        if(c == '\n')
-        {
-            if(j !=0)
-                {
-                    copyFile[i][j] = c;
-                    i++;
-                }
-            j = 0;  
-            c = fgetc(fptr); 
-        }
-        else if (j!=0 && c==' ')
-        {
-            
-            copyFile[i][j] = c;
-            j++;
-            while (c == ' ')
-            {
-                c = fgetc(fptr);
-            }
-            if(c == '\n')
-            {
-                if(j !=0)
-                    {
-                        copyFile[i][j] = c;
-                        i++;
-                    }
-                j = 0;   
-            }
-            else
-                {
-                    copyFile[i][j] = c;
-                    j++;
-                    c = fgetc(fptr);
-                }
-        }
-        else if (j==0 && c==' ')
-        {
-            while (c == ' ')
-            {
-                c = fgetc(fptr);
-            }
-            if(c == '\n')
-            {  
-                c = fgetc(fptr);
-            }
-            else
-            {
-                copyFile[i][j] = c;
-                j++;
-                c = fgetc(fptr);
-            }
-
-        }
-        else if (c == ';')
-        {
-            while (c !='\n'&& c !=EOF)
-            {
-                c = fgetc(fptr);
-            }
-            c = fgetc(fptr);
-        }
-        else if(c == '\n')
-        {
-            copyFile[i][j] = c;
-            j==0;
-            i++;
-            c = fgetc(fptr);
-        }
-        else
-        {
-            copyFile[i][j] = c;
-            j++;
-            c = fgetc(fptr);
-        }
-    }
-
-    printf("%s", copyFile[1]);
+    length = i;
 }
+void arraySet()
+{
+    int i = 0;
+    int j;
+    char newLine[RSIZ][LSIZ];
+    while (i < length)
+    {
+        for (j = 0;j<(strlen(line[i])-1);j++)
+        {
+            if (line[i][j]!= '\0' && line[i][j]!= '\n')
+            {
+                newLine[i][j] = line[i][j];
+            }    
+        }
+        i++;
+    }
+    for( i = 0; i < 4; ++i)
+    {
+        printf(" %s\n", newLine[i]);
+    }
+    printf("\n");
+}
+// }
+// void readFileToArray()
+// {
+//     FILE *f;
+//     int i = 0,j = 0;
+//     int c;
+//     char arr[50][50];
+
+//     f = fopen("bar2.txt", "r");
+//     while ((c = fgetc(f)) != EOF && (c == ' ' || c == '\t' || c == '\n'));//pass the first line
+
+//     while (c != EOF) {
+//         printf("%c",c);
+//     if (c == ' ' || c == '\t' || c == '\n' || c == ';') {
+//         if (c == '\n') {
+//         arr[i][j] = '\0';
+//         i++; j = 0;
+//         }if (c == ';')
+//         {
+//            while (c != EOF && c != '\n')
+//            {
+//                c = fgetc(f);
+//            }
+//         }
+//         else {
+//         arr[i][j] = ' ';
+//         j++;
+//         }
+//         while ((c = fgetc(f)) != EOF && (c == ' ' || c == '\t' || c == '\n'));
+//         continue;
+//     }
+//     arr[i][j] = (char)c;
+//     j++;
+//     c = fgetc(f);
+//     }
+//     i++;
+//     arr[i][0] = '\0';
+//     arr[i][1] = '\0';
+//     i = 0;
+//     j = 0;
+//     // while (arr[i][0] != '\0'&&arr[i][1] != '\0') {
+//     //  printf("line %d\n",i);
+//     // while (arr[i][j] != '\0') {
+//     //     printf("%c",arr[i][j]);
+//     //     j++;
+//     // }
+//     // printf("\n");
+//     // i++;
+//     //}
+// }

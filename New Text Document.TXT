@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "compiler.c"
+
+void readFileToArray(char copyFile[50][50],FILE *fptr);
+int main()
+{
+    FILE *fptr;
+    char copyFile[50][50];
+    readFileToArray(copyFile,fptr);
+    FILE *newF = fopen("bar.TXT", "wb");
+    fwrite(copyFile, sizeof(char), sizeof(copyFile), newF);
+    fclose(newF);
+    fclose(fptr);
+   void makeNewFile();
+    return 0;
+}
+void readFileToArray(char copyFile[50][50],FILE *fptr)
+{
+    char filename[30] = "bar.TXT";
+    char c;
+    int i = 0,j=0;
+  
+    fptr = fopen(filename, "r");
+    if (!checkFile(fptr))
+    {
+        printf("Cannot open file \n");
+        exit(0);
+    }
+  
+    c = fgetc(fptr);
+    while (c != EOF)
+    {
+        printf ("%c", c);
+        if(c == '\n')
+        {
+            if(j !=0)
+                {
+                    copyFile[i][j] = c;
+                    i++;
+                }
+            j = 0;  
+            c = fgetc(fptr); 
+        }
+        else if (j!=0 && c==' ')
+        {
+            
+            copyFile[i][j] = c;
+            j++;
+            while (c == ' ')
+            {
+                c = fgetc(fptr);
+            }
+            if(c == '\n')
+            {
+                if(j !=0)
+                    {
+                        copyFile[i][j] = c;
+                        i++;
+                    }
+                j = 0;   
+            }
+            else
+            {
+                 if (c!=NULL)
+                {
+                    copyFile[i][j] = c;
+                     j++;
+                }
+                
+                c = fgetc(fptr);
+            }
+        }
+        else if (j==0 && c==' ')
+        {
+            while (c == ' ')
+            {
+                c = fgetc(fptr);
+            }
+            if(c == '\n')
+            {  
+                c = fgetc(fptr);
+            }
+            else
+            {
+                if (c!=NULL)
+                {
+                copyFile[i][j] = c;
+                j++;
+                c = fgetc(fptr);
+                }
+            }
+
+        }
+        else if (c == ';')
+        {
+            while (c !='\n'&& c !=EOF)
+            {
+                c = fgetc(fptr);
+            }
+            c = fgetc(fptr);
+        }
+        else if(c == '\n')
+        {
+            copyFile[i][j] = c;
+            j==0;
+            i++;
+            c = fgetc(fptr);
+        }
+        else if(c == '\t')
+        {
+            copyFile[i][j] = ' ';
+            j++;
+            while (c == '\t')
+            {
+                c = fgetc(fptr);
+            }
+            if(c == '\n')
+            {
+                if(j !=0)
+                    {
+                        copyFile[i][j] = c;
+                        i++;
+                    }
+                j = 0;   
+            }
+            else
+            {
+                if (c!=NULL)
+                {
+                copyFile[i][j] = c;
+                j++;
+                c = fgetc(fptr);
+                }
+            }
+
+        }
+        else
+        {
+            if (c!=NULL)
+            {
+            copyFile[i][j] = c;
+            j++;
+            }
+            c = fgetc(fptr);
+        }
+        
+    }
+    printf("%s", copyFile[0]);
+    printf("%s", copyFile[1]);
+    printf("%s", copyFile[2]);
+    printf("%s", copyFile[3]);
+    printf("%s", copyFile[4]);
+    printf("%s", copyFile[5]);
+}
