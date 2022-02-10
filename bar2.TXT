@@ -1,4 +1,3 @@
-ohad     drukman
-;addasdasdsa		 	
-budapest is  th
-bar guetta
+bar
+guetta
+ohad
