@@ -386,4 +386,56 @@ int checkComma(int boolean,FILE *fp)
         }
     return boolean;
 }
-
+// int funcArguments(int boolean,FILE *fp)
+// {
+//     char line[80];
+//     int numArgument = 3;
+//     int LineCounter = 1;
+//     while ( fgets(line,80,fp) != NULL)
+//         {
+//             if(strstr(line, "mov") != 0  || strstr(line, "cmp") != 0||strstr(line, "add") != 0 
+//              || strstr(line, "sub") != 0  ||strstr(line, "lea") != 0  )
+//             {   
+//                 numArgument = 2;
+//             }
+//             if(strstr(line, "clr") != 0  || strstr(line, "not") != 0||strstr(line, "jmp") != 0 
+//              || strstr(line, "inc") != 0  ||strstr(line, "dec") != 0||strstr(line, "jsr")!= 0
+//              || strstr(line, "jmp") != 0  ||strstr(line, "bne") != 0 ||strstr(line, "red")!= 0
+//              ||strstr(line, "prn" ))
+//             {   
+//                 numArgument = 1;
+//             }
+//             if (strstr(line, "rst") != 0  ||strstr(line, "stop") != 0  )
+//             {
+//                 numArgument = 0;
+//             }
+//             switch (numArgument)
+//             {
+//             case 0:
+//                     if (strstr(line, ",") != 0)
+//                     {
+//                         printf("eror in line %d: function can not have arguments",LineCounter);
+//                         boolean = 0;
+//                     }
+                    
+//                 break;
+//             case 1:
+//                 if (strstr(line, ",") != 0)
+//                     {
+//                         printf("eror in line %d: function can not have more then one arguments",LineCounter);
+//                         boolean = 0;
+//                     }
+//                 break;
+//             case 2:
+//                     if (strstr(line, ",") == 0)
+//                     {
+//                         printf("eror in line %d: function have to get 2 arguments",LineCounter);
+//                         boolean = 0;
+//                     }
+//             break;
+//             default:
+//                 break;
+//             }
+//         }
+//     return boolean;
+// }

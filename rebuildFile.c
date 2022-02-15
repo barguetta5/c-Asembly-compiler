@@ -10,12 +10,14 @@ void *setLine(char line[lengthLine]);
     char line[lengthLine];
     char *buffer;
 	char *ptr;
-    int i,j;
+    char *ptr2;
+    int i = 0,j;
     int spacesCounter;
 
     buffer = (char*)malloc(1000*sizeof(char));
     memset(buffer,0,1000*sizeof(char));
     ptr = buffer;
+    ptr2 = buffer;
 
     fptr = fopen("bar2.TXT","r");
 
@@ -31,31 +33,54 @@ void *setLine(char line[lengthLine]);
                     fgets(line,lengthLine,fptr);
                 }
             }
-            if (strstr(line, ";") == 0&&line [0] != '\n')
+            else if (strstr(line, ";") == 0 && line [0] != '\n')
             {
+                while (line[i]!='\n')
+                {
+                    if (line[i] == '\t')
+                    {
+                        if (i != 0)
+                        {
+                            line[i] = ' ';
+                        }
+                        else if (i==0)
+                        {
+                            for (i = -1; line[i+1]!='\n'; i++)  
+                            {  
+                                line[i] = line[i+1]; // assign arr[i+1] to arr[i]  
+                            }  
+                            line[i] = ' ';
+                        }
+                    }
+                    else if (line[i] == ' ')
+                    {
+                        j = 0;
+                        if (i == 0)
+                        {
+                            while (line[i] == ' ')
+                            {
+                                i++;
+                            }
+                            while (line[i+1] != '\n')
+                            {
+                                line[j] = line[i];
+                                i++;
+                                j++;
+                            }  
+                            line[j] = line[i];
+                            line[j+1] = ' ';
+                        }
+                    }                    
+                    i++;
+                }
+                
                 strcpy(ptr,line);
                 ptr += strlen(line);
-            }
-            
+            }  
+            i = 0;  
         }
         fclose(fptr);
-        for ( i = 0; i < 50; i++)
-        {
-            if (buffer[i] == '\t')
-            {
-                    buffer[i] = ' ';     
-            }  
-            if (buffer[i] == ' ' &&buffer[i+1] == ' ' )
-            {
-                j = i;
-                j++;
-                buffer[i] = buffer[j];
-                i++;          
-            }  
-            printf("%c",buffer[i]);      
-        }
-        
-        fptr =  fopen("bar2.TXT","w");
+        fptr =  fopen("bar2.TXT","w"); 
         fprintf(fptr,"%s",buffer);
         fclose(fptr);
     }
@@ -63,6 +88,4 @@ void *setLine(char line[lengthLine]);
     {
         printf("coudnt finde ........");
     }
-
-
   } 
