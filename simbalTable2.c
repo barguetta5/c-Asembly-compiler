@@ -14,7 +14,6 @@ static entryArray[30][30];
 
 char *fileToArray(FILE *fptr);
 int checkOgerInArray(char array[80]);
-int countCommon(char array[80]);
 void checkFuncInArray(char array[80]);
 void insertLabel(char *arrayFile);
 int sizeOfFile(int sz,FILE *fptr);
@@ -34,7 +33,8 @@ void main()
         printf("%s\n",lables[i]);
     }
     fclose(fptr);
-    //printf("%d",icPlus(" LOOP: prn #48 "));
+    // icPlus(" bne END[r15] ");
+    // printf("%d",ic);
 }
 int sizeOfFile(int sz,FILE *fptr)//the size of the file
 {
@@ -70,31 +70,18 @@ char *fileToArray(FILE *fptr) //convert file to array buffer
   } 
 void insertLabel(char *arrayFile)//get the file in array
 {
+    FILE *fptr;
+    fptr = fopen("bar2.txt","r");
     int i = 0, j = 0;
     int icIndex = 0;
     int base ,offset;
     char *lable;
-    char *icLine;
-    icLine = (char*)malloc(80);
+    char icLine[80];
     lable = (char*)malloc(30);
     int code;
-    printf("%s",icLine);
     printf("%d\n",sz);
     for (i = 0; i < sz; i++)
     {
-        if (arrayFile[i]!='\n')
-        {
-            icLine[icIndex] = arrayFile[i];
-            icIndex++;
-        }
-        else
-        {
-            printf("%s\n",icLine);
-            //icPlus(icLine);
-            icLine = memset(icLine,'\0',80);
-            icIndex = 0;      
-        }
-        
         base = (ic-(ic%16));
         offset = (ic%16);
         j = 0;
@@ -102,7 +89,7 @@ void insertLabel(char *arrayFile)//get the file in array
         memset(lable,0,30);
         if (arrayFile[i] == '.' && arrayFile[i+1] == 'e'&& arrayFile[i+2] == 'x')//finde entry lable
         {
-            ic = 100;
+            
             while (arrayFile[i] != ' ')//get to the space after the word
             {
                 i++;
@@ -125,7 +112,6 @@ void insertLabel(char *arrayFile)//get the file in array
                 i++;
             }
             i++;// pass the space
-            ic++;
             while (arrayFile[i] != '\n'&&arrayFile[i] != ' ')//insert label
             {
                 lable[j] = arrayFile[i];
@@ -133,7 +119,6 @@ void insertLabel(char *arrayFile)//get the file in array
                 i++;
             }   
             lable[j] = 0;
-            ic++;
             strcpy(entryArray[indexEntry],lable);
             indexEntry++;
         }  
@@ -160,12 +145,13 @@ void insertLabel(char *arrayFile)//get the file in array
             printf("  value - %d  base - %d  offset - %d ,code - %d\n",ic,base,offset,code);
             existLable(lable,lables);
         }
-        if (arrayFile[i] == ' ')
+        if (arrayFile[i]=='\n')
         {
-            ic++;
+            fgets(icLine,80,fptr);
+            icPlus(icLine);
         }
-        
     }
+    fclose(fptr);
 }
 int existLable(char lable[30],char lables[30][30])
 {
@@ -205,6 +191,7 @@ void icPlus(char line[80])//pass the : in the text
         }
            checkFuncInArray(newLine);
     }
+    else
       checkFuncInArray(line);
 }
 void checkFuncInArray(char array[80])//return how many ic i need to add to my counter
@@ -252,12 +239,12 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
         }
         else
         {
-            if (countCommon(array) == 2)
+            if (strstr(firstOp,"#") &&strstr(secondtOp,"#"))
             {
                 ic+=4;
                 return ;
             }
-            else if (countCommon(array) == 1)
+            else if (strstr(firstOp,"#") ||strstr(secondtOp,"#"))
             {
                 ic+=5;
                 return ;
@@ -272,8 +259,15 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
     else if (strstr(array,"clr")||strstr(array,"not")||strstr(array,"inc")||strstr(array,"dec")||strstr(array,"jmp")
             ||strstr(array,"bne")||strstr(array,"jsr")||strstr(array,"red")||strstr(array,"prn"))
     {
+        
         if(checkOgerInArray(array) == 1)
         {
+            
+            if (array[5]>=65 &&array[5]<=122 &&array[5]!='r')
+            {
+                 ic+=4;
+                return ;
+            }
             ic+=2;
             return ;
         }
@@ -323,6 +317,11 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
         ic+=countC;
         return ;
     }
+    else if (strstr(array,".extern")||strstr(array,".entry"))
+    {
+        return;
+    }
+    
     ic+=1;
     return ;
 }
@@ -339,17 +338,4 @@ int checkOgerInArray(char array[80])//check how much ogrim i have got
             count++;
     }
     return count;
-}
-int countCommon(char array[80])//check if there is common in the line
-{
-    int i;
-    int counter = 0;
-    while (array[i] !='\n')
-    {
-        if (array[i] == '#')
-        {
-             counter++;
-        }
-    }
-    return counter;
 }
