@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-char fileName[20] = "b.txt";
+char fileName[20] = "bar2.txt";
 int checkFile(FILE *fp);
 int checkDot(int boolean,FILE *fp);
 int checkColon(int boolean,FILE *fp);

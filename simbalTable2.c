@@ -1,75 +1,94 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "typedefSimble.c"
+
 #define lengthLine 81
+
+static simbls tab[15];//array of all the simbles
+static int simbCount = 0;
 static int arrayLength = 0;
 static int ic = 100;
 static int dc = 0;
 static int sz;
 static int indexExtern = 0;
 static int indexEntry = 0;
-static lables[30][30];
-static externArray[30][30];
-static entryArray[30][30];
 
-char *fileToArray(FILE *fptr);
+void insertToFile(FILE *fptr,int *binaryArray,int counterIc);
+int twoOperands(char *line,int *binaryArray);
+int wichOger(char *line,int *binaryArray);
+char *fileToArray();
+void initializNegativ(int binaryArray[20]);
+void intToBinary2(int num,int binaryArray[20]);
+void intToBinary(char num[3],int binaryArray[20]);
 int checkOgerInArray(char array[80]);
 void checkFuncInArray(char array[80]);
 void insertLabel(char *arrayFile);
-int sizeOfFile(int sz,FILE *fptr);
+int sizeOfFile(int sz);
 void icPlus(char line[80]);
 int existLable(char lable[30],char lables[30][30]);
-void main()
+int recognizeOperands(char *array);
+void initializTab(int binaryArray[20]);
+int wichOgerMacor(char *line,int *binaryArray);
+int wichOgerYaad(char *line,int *binaryArray);
+int offsetLabe(char *line);
+int baseLabe(char *line);
+void numberPrint(char *line,int *binaryArray);
+void initializ(int binaryArray[20]);
+void codeToBinary();
+// void main()
+// {
+//     FILE *fptr;
+//     int i = 0;
+//     fptr = fopen("bar2.txt","r");
+//     sz = sizeOfFile(sz,fptr);
+//     fileToArray(fptr);
+//     for (i = 0; i < simbCount; i++)
+//     {
+//         printTable(tab[i]);
+//     }
+//     fclose(fptr);
+    
+// }
+int sizeOfFile(int sz)//the size of the file
 {
     FILE *fptr;
-    char *ptr;
-    int i = 0;
-    char line[80];
-    fptr = fopen("bar2.txt","r");
-    sz = sizeOfFile(sz,fptr);
-    ptr = fileToArray(fptr);
-    for (i = 0; i < 30; i++)
-    {
-        printf("%s\n",lables[i]);
-    }
-    fclose(fptr);
-    // icPlus(" bne END[r15] ");
-    // printf("%d",ic);
-}
-int sizeOfFile(int sz,FILE *fptr)//the size of the file
-{
+    fptr = fopen("bar2.TXT","r");
     fseek(fptr, 0L, SEEK_END);
     sz = ftell(fptr);
+    fclose(fptr);
     return sz;
 }
-char *fileToArray(FILE *fptr) //convert file to array buffer
+char *fileToArray() //convert file to array buffer
   {
+    FILE *fptr;
     char line[lengthLine];
     char *buffer;
 	char *ptr;
     int i = 0,j;
-
+    
+    fptr = fopen("bar2.TXT","r");
+    sz = sizeOfFile(sz);
     buffer = (char*)malloc(1000*sizeof(char));
     memset(buffer,0,1000*sizeof(char));
     ptr = buffer;
-
-    fptr = fopen("bar2.TXT","r");
     while (!feof(fptr))
     {
         fgets(line,lengthLine,fptr);
         strcpy(ptr,line);
         ptr += strlen(line);
-        
     }
+    //printf("%s",buffer);
     fclose(fptr);
-    fptr =  fopen("bar2.TXT","w");
-    fprintf(fptr,"%s",buffer);
-    fclose(fptr);
-    insertLabel(buffer);
+    // fptr =  fopen("bar2.TXT","w");
+    // fprintf(fptr,"%s",buffer);
+    // fclose(fptr);
+    insertLabel(buffer);//mybe this is the problam
     return buffer;
   } 
 void insertLabel(char *arrayFile)//get the file in array
-{
+{ 
+    
     FILE *fptr;
     fptr = fopen("bar2.txt","r");
     int i = 0, j = 0;
@@ -79,7 +98,6 @@ void insertLabel(char *arrayFile)//get the file in array
     char icLine[80];
     lable = (char*)malloc(30);
     int code;
-    printf("%d\n",sz);
     for (i = 0; i < sz; i++)
     {
         base = (ic-(ic%16));
@@ -89,21 +107,27 @@ void insertLabel(char *arrayFile)//get the file in array
         memset(lable,0,30);
         if (arrayFile[i] == '.' && arrayFile[i+1] == 'e'&& arrayFile[i+2] == 'x')//finde entry lable
         {
-            
             while (arrayFile[i] != ' ')//get to the space after the word
             {
                 i++;
             }
             i++;// pass the space
-            while (arrayFile[i] != '\n')//insert label
+            while (arrayFile[i] != '\n' && i<sz)//insert label
             {
                 lable[j] = arrayFile[i];
                 j++;
                 i++;
-            }   
+            }  
             lable[j] = 0;
-            strcpy(externArray[indexExtern],lable);
-            indexExtern++;
+            if(!exist(tab,lable,simbCount,code,ic,base,offset))
+            {    strcpy(tab[simbCount].lab,lable);
+                tab[simbCount].value = 0;
+                tab[simbCount].base = 0;
+                tab[simbCount].offset = 0;
+                tab[simbCount].atr[0] = 0;
+                simbCount++;
+            }
+
         }
         else if (arrayFile[i] == '.' && arrayFile[i+1] == 'e'&& arrayFile[i+2] == 'n')//finde entry lable
         {
@@ -119,8 +143,15 @@ void insertLabel(char *arrayFile)//get the file in array
                 i++;
             }   
             lable[j] = 0;
-            strcpy(entryArray[indexEntry],lable);
-            indexEntry++;
+            code = 1;
+            if(!exist(tab,lable,simbCount,code,ic,base,offset))
+                { strcpy(tab[simbCount].lab,lable);
+                tab[simbCount].value = ic;
+                tab[simbCount].base = base;
+                tab[simbCount].offset = offset;
+                tab[simbCount].atr[0] = code;
+                simbCount++;
+                }
         }  
         else if (arrayFile[i] == ':')
         {
@@ -139,16 +170,20 @@ void insertLabel(char *arrayFile)//get the file in array
                 i++;
             }
             lable[j] = 0;
-            for (j = 0; j <6 ; j++){
-                 printf("%c",lable[j]);
+           
+            if(!exist(tab,lable,simbCount,code,ic,base,offset))
+            { strcpy(tab[simbCount].lab,lable);
+            tab[simbCount].value = ic;
+            tab[simbCount].base = base;
+            tab[simbCount].offset = offset;
+            tab[simbCount].atr[0] = code;
+            simbCount++;
             }
-            printf("  value - %d  base - %d  offset - %d ,code - %d\n",ic,base,offset,code);
-            existLable(lable,lables);
         }
         if (arrayFile[i]=='\n')
         {
             fgets(icLine,80,fptr);
-            icPlus(icLine);
+            icPlus(icLine); 
         }
     }
     fclose(fptr);
