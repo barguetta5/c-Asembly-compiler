@@ -14,42 +14,16 @@ static int sz;
 static int indexExtern = 0;
 static int indexEntry = 0;
 
-void insertToFile(FILE *fptr,int *binaryArray,int counterIc);
-int twoOperands(char *line,int *binaryArray);
-int wichOger(char *line,int *binaryArray);
+
 char *fileToArray();
-void initializNegativ(int binaryArray[20]);
-void intToBinary2(int num,int binaryArray[20]);
-void intToBinary(char num[3],int binaryArray[20]);
-int checkOgerInArray(char array[80]);
 void checkFuncInArray(char array[80]);
 void insertLabel(char *arrayFile);
 int sizeOfFile(int sz);
 void icPlus(char line[80]);
 int existLable(char lable[30],char lables[30][30]);
-int recognizeOperands(char *array);
-void initializTab(int binaryArray[20]);
-int wichOgerMacor(char *line,int *binaryArray);
-int wichOgerYaad(char *line,int *binaryArray);
-int offsetLabe(char *line);
-int baseLabe(char *line);
-void numberPrint(char *line,int *binaryArray);
-void initializ(int binaryArray[20]);
-void codeToBinary();
-// void main()
-// {
-//     FILE *fptr;
-//     int i = 0;
-//     fptr = fopen("bar2.txt","r");
-//     sz = sizeOfFile(sz,fptr);
-//     fileToArray(fptr);
-//     for (i = 0; i < simbCount; i++)
-//     {
-//         printTable(tab[i]);
-//     }
-//     fclose(fptr);
-    
-// }
+
+
+
 int sizeOfFile(int sz)//the size of the file
 {
     FILE *fptr;
@@ -170,7 +144,6 @@ void insertLabel(char *arrayFile)//get the file in array
                 i++;
             }
             lable[j] = 0;
-           
             if(!exist(tab,lable,simbCount,code,ic,base,offset))
             { strcpy(tab[simbCount].lab,lable);
             tab[simbCount].value = ic;
@@ -340,7 +313,12 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
     }
     else if (strstr(array,".string"))//check the ic of .string
     {
-        i = 11;
+        i = 3;
+        while (array[i] != 'i'&&array[i+1] != 'n'&&array[i+2] != 'g')
+        {
+            i++;
+        }
+        i+=5;
         while (array[i]>='A'&&array[i]<'z' && array[i]!='\n')
         {
             if (array[i]>='a'&&array[i]<'z')
@@ -359,18 +337,4 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
     
     ic+=1;
     return ;
-}
-int checkOgerInArray(char array[80])//check how much ogrim i have got
-{
-   
-    int i = 0;
-    static int count;
-    count = 0;
-    if (strstr(array,"r0")||strstr(array,"r1")||strstr(array,"r2")||strstr(array,"r3")||strstr(array,"r4")
-    ||strstr(array,"r5")||strstr(array,"r6")||strstr(array,"r7")||strstr(array,"r8")||strstr(array,"r9")
-    ||strstr(array,"r10")||strstr(array,"r11")||strstr(array,"r12")||strstr(array,"r13")||strstr(array,"r14")||strstr(array,"r15"))
-    {
-            count++;
-    }
-    return count;
 }

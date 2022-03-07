@@ -9,7 +9,7 @@ typedef struct Node
   int offset;
   int atr[2];// 1 = external , 2 = entry , 3 = code , 4 =  data
 }simbls;
-void printTable(simbls tabel)
+void printTable(simbls tabel)//print the lable
 {
   if (tabel.atr[1]!= 0)
   {
@@ -21,7 +21,7 @@ void printTable(simbls tabel)
      ,tabel.base,tabel.offset,tabel.atr[0]);
   
 } 
-int exist(simbls *lables,char lab[30],int len,int code,int value,int base,int offset)
+int exist(simbls *lables,char lab[30],int len,int code,int value,int base,int offset)//check if lable exist
 { 
   int i;
   for (i = 0; i < len; i++)

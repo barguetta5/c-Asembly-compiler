@@ -3,21 +3,20 @@
 #include <stdlib.h>
 
 #define lengthLine 81
-void *setLine(char line[lengthLine]);
   void main() 
   {
     FILE *fptr;
     char line[lengthLine];
+    char *copyLine;
     char *buffer;
 	char *ptr;
-    char *ptr2;
     int i = 0,j;
     int spacesCounter;
-
+    
+    copyLine =(char*)malloc(81);
     buffer = (char*)malloc(1000*sizeof(char));
     memset(buffer,0,1000*sizeof(char));
     ptr = buffer;
-    ptr2 = buffer;
 
     fptr = fopen("bar2.TXT","r");
 
@@ -33,7 +32,7 @@ void *setLine(char line[lengthLine]);
                     fgets(line,lengthLine,fptr);
                 }
             }
-            else if (strstr(line, ";") == 0 && line [0] != '\n')
+            else if (strstr(line, ";") == 0)
             {
                 while (line[i]!='\n')
                 {
@@ -88,4 +87,6 @@ void *setLine(char line[lengthLine]);
     {
         printf("coudnt finde ........");
     }
+    free(buffer);
+    free(copyLine);
   } 
