@@ -8,7 +8,7 @@ got 4 placese from the line that give getLine
 from the filr from each line
 and convert the binary 4 number to one regular number
 */
-void getLine();
+void hexaFile();
 /*
 insert line by line to insertHexa function
 */

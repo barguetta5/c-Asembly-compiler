@@ -1,22 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "printBinry.c"
 
 #define lengthLine 81
 
 char numberToHexca(int number);
 int binaryConvert(char line[4]);
-void insertToFile(FILE *fptr,char hexa[18]);
-void getLine();
+void insertToFile2(FILE *fptr,char hexa[18]);
+void getLine(char newNameFile[30]);
 void insertHexa(char line[lengthLine],FILE *newF);
+int howManyLines();
+void firstInsertToFile(FILE *fptr,int funcNumber,int MethodNumber);
+// void main()
+// {
+//     getLine(char newNameFile[30]);
+// }
 
-
-void getLine()//get line from binary file and convert to hexa decimal
+void getLine(char newNameFile[30])//get line from binary file and convert to hexa decimal
 {
     FILE *fptr;
     FILE *newF;
     char line[lengthLine];
+    int funcs,metho;
     fptr = fopen("binaryFile.txt ","r");
-    newF = fopen("hexaDecimal.txt","w");
+    newF = fopen("ps.ob","w");
+    metho  = startBinaryPrint(newNameFile);
+    funcs = howManyLines()- metho;
+    //fprintf(fptr,"    %d      %d\n",(ic-(ic%10)),(ic%10));
+    firstInsertToFile(newF,funcs,metho);
     fgets(line,lengthLine,fptr);
     while (!feof(fptr))
     {
@@ -86,15 +97,19 @@ void insertHexa(char line[lengthLine],FILE *newF)
     }
     number = binaryConvert(binary);
     hexa[1] = numberToHexca(number);
-    insertToFile(newF,hexa);
+    insertToFile2(newF,hexa);
 
 }
-void insertToFile(FILE *fptr,char hexa[18]) //this method print to file the binary table 
+void insertToFile2(FILE *fptr,char hexa[18]) //this method print to file the binary table 
 {    
     fprintf(fptr,"%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",hexa[18]
     ,hexa[17],hexa[16],hexa[15],hexa[14],hexa[13],hexa[12],hexa[11]
     ,hexa[10],hexa[9],hexa[8],hexa[7],hexa[6],hexa[5]
     ,hexa[4],hexa[3],hexa[2],hexa[1],hexa[0]);
+}
+void firstInsertToFile(FILE *fptr,int funcNumber,int MethodNumber) //this method print to file the binary table 
+{    
+    fprintf(fptr,"       %d   %d\n",funcNumber,MethodNumber);
 }
 int binaryConvert(char line[4])
 {
@@ -183,4 +198,19 @@ char numberToHexca(int number)
     }
     return number;
     
+}
+int howManyLines()
+{
+    FILE *fptr;
+    char line[80];
+    int count = -1;
+    int lastLineNumber;
+    fptr = fopen("binaryFile.txt ","r");
+     while (!feof(fptr))
+    {
+        fgets(line,81,fptr);
+        count++;
+    }
+    fclose(fptr);
+    return count;
 }

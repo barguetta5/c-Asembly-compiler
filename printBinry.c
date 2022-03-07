@@ -3,7 +3,7 @@
 #include "simbalTable2.c"
 
 void printBinToChar(char character,int *binaryArray);
-void codeToBinary(char *line,char *ptr);
+int codeToBinary(char *line,char *ptr);
 int recognizeOperands(char *array);
 int wichOger(char *line,int *binaryArray);
 int wichOgerMacor(char *line,int *binaryArray);
@@ -16,45 +16,72 @@ void numberPrint(char *line,int *binaryArray);
 int baseLabe(char *line);
 int offsetLabe(char *line);
 int twoOperands(char *line,int *binaryArray);
-void insertToFile(FILE *fptr,int *binaryArray,int counterIc);
+int insertToFile(FILE *fptr,int *binaryArray,int counterIc);
 int checkOgerInArray(char array[80]);
 void oneOperandFunc(char *line,int *binaryArray);
 int wichOgerInLab(char *line,int *binaryArray);
 int wichOgerInLabM(char *line,int *binaryArray);
+int startBinaryPrint(char newNameFile[30]);
+int insertToPsFile(FILE *fptr,char lableName[30],int counterIc);
+char *nameLabele(char *line);
+int baseLabe(char *line);
+void entryFile();
 // void main()
 // {
-//     int i;
-//     char *line = (char*)malloc(80*sizeof(char));
-//     char *ptr;
-//     ptr   = fileToArray();
-//     // for (i = 0; i < simbCount; i++)
-//     // {
-//     //     printTable(tab[i]);
-//     // }
-//     codeToBinary(line,ptr);
+//     startBinaryPrint("bar.ob");
 // }
-void codeToBinary(char *line,char *ptr)
+int startBinaryPrint(char newNameFile[30])
+{
+    int i;
+    char *line = (char*)malloc(80*sizeof(char));
+    char *ptr;
+    int number;
+    ptr   = fileToArray(newNameFile);
+    // for (i = 0; i < simbCount; i++)
+    // {
+    //     printTable(tab[i]);
+    // }
+    number = codeToBinary(line,ptr);
+    entryFile();
+    free(line);
+    free(ptr);
+    return number;
+}
+void entryFile()//pass after all the tabs and print in new file the entry simblse
+{
+    FILE *newF;
+    int i;
+    newF = fopen("ps.ent","w");
+     for (i = 0; i < simbCount; i++)
+    {
+        if (tab[i].atr[0] == 1 || tab[i].atr[1] == 1)
+        {
+            fprintf(newF,"%s,%d,%d\n",tab[i].lab,tab[i].base,tab[i].offset);
+        }
+    }
+    fclose(newF);
+}
+int codeToBinary(char *line,char *ptr)
 {
     FILE *binaryFile;
+    FILE * psF;
     int binaryArray[20];
     char *num;
     int numIndex;
     int funcType;
-    char firstFunc[5][3] = {"mov","cmp","add","sub","lea"};
-    char fiveFunc[4][3] = {"clr","nor","inc","dec"};
-    char nineFunc[4][3] = {"jmp","bne","jsr"};
     int i = 0;
     int j;
-    int counterComma;
+    int numberNotFu = 0;
     int indexLine = 0;
     int counterIc = 100;
     binaryFile = fopen("binaryFile.txt", "w");
+    psF = fopen("ps.ext", "w");
     num = (char*)malloc(5);
     initializ(binaryArray);
     while (i<sz)
     {
         memset(line,'\0',80*sizeof(char));
-        
+
         indexLine = 0;
         while (ptr[i]!='\n'&&i<sz)
         {
@@ -64,10 +91,11 @@ void codeToBinary(char *line,char *ptr)
         }
         i++;
         funcType =  recognizeOperands(line);
-
+        //printf("%s\n",line);
         switch (funcType)
         {
             case 0:
+
                     if (strstr(line,".extern"))
                     {
                         counterIc = 100;
@@ -92,10 +120,12 @@ void codeToBinary(char *line,char *ptr)
                     }
                     else
                     {
+                       
                         binaryArray[18] = 1;
                         if (strstr(line,"clr")||strstr(line,"not")||strstr(line,"inc")
                           ||strstr(line,"dec"))
                         {
+                             
                             binaryArray[5] = 1;
                         }
                         else if(strstr(line,"jmp")||strstr(line,"bne")||strstr(line,"jsr"))
@@ -141,6 +171,11 @@ void codeToBinary(char *line,char *ptr)
                         initializ(binaryArray);
                         counterIc++;
                         binaryArray[17] = 1;
+                        if (baseLabe(line) == 0)
+                        {
+                            insertToPsFile(psF,nameLabele(line),counterIc);
+                            insertToPsFile(psF,nameLabele(line),counterIc+1);
+                        }
                         intToBinary2(line,baseLabe(line),binaryArray);
                         insertToFile(binaryFile,binaryArray,counterIc);
                         initializ(binaryArray);
@@ -153,8 +188,10 @@ void codeToBinary(char *line,char *ptr)
                     }
                 break;
             case 2:
+                    
                     if (strstr(line,"mov"))
                     {
+                        
                         binaryArray[18] = 1;//print first line
                         binaryArray[0] = 1;
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -164,7 +201,7 @@ void codeToBinary(char *line,char *ptr)
                         twoOperands(line,binaryArray);
                         if (strstr(line,"] ,") ||strstr(line,"],"))
                             {
-                                printf("got in");
+                                
                                 wichOgerInLabM(line,binaryArray);
                             }
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -187,7 +224,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
-
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -212,7 +253,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
-                               
+                               if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -229,6 +274,8 @@ void codeToBinary(char *line,char *ptr)
                             if (baseLabe(line) == 0)
                             {
                                 binaryArray[16] = 1;
+                                insertToPsFile(psF,nameLabele(line),counterIc);
+                                insertToPsFile(psF,nameLabele(line),counterIc+1);
                             }
                             else
                             {
@@ -256,7 +303,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
-                            
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -273,6 +324,7 @@ void codeToBinary(char *line,char *ptr)
                     }
                     else if (strstr(line,"cmp"))
                     {
+                        
                         binaryArray[18] = 1;//print first line
                         binaryArray[1] = 1;
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -280,14 +332,17 @@ void codeToBinary(char *line,char *ptr)
                         counterIc++;
                         binaryArray[18] = 1;
                         twoOperands(line,binaryArray);
+                        
                         if (strstr(line,"] ,") ||strstr(line,"],"))
                             {
-                                printf("got in");
+                                
                                 wichOgerInLabM(line,binaryArray);
                             }
+                            
                         insertToFile(binaryFile,binaryArray,counterIc);
                         initializ(binaryArray);
                         counterIc++;
+                        
                         if (strstr(line,"cmp #"))
                         {
                             numberPrint(line,binaryArray);
@@ -298,14 +353,51 @@ void codeToBinary(char *line,char *ptr)
                             {}
                             else if (strstr(line,", #"))
                             {
-                                numberPrint(line,binaryArray);
+                                
+                                j = 0;
+                                numIndex = 0;
+                                
+                                while (line[j]!='#')
+                                {
+                                    j++;
+                                }
+                                j++;
+                                while (line[j]!='\n')
+                                {
+                                    if (line[j] == '+'||line[j] == '-' )
+                                    {
+                                        num[numIndex] = line[j];
+                                        numIndex++;
+                                    }
+                                    else if (line[j] == '0' ||line[j] == '1' ||line[j] == '2' 
+                                    ||line[j] == '3' ||line[j] == '4' ||line[j] == '5' ||line[j] == '6' 
+                                    ||line[j] == '7' ||line[j] == '8' ||line[j] == '9' )
+                                    {
+                                        num[numIndex] = line[j];
+                                        numIndex++;
+                                    }
+                                }
+                                //printf("%s",num);
+                                binaryArray[18] = 1;
+                                intToBinary(num,binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
                                 counterIc++;
+                                memset(num,'\0',5);
+                                numIndex = 0;
+
+                                // numberPrint(line,binaryArray);
+                                // insertToFile(binaryFile,binaryArray,counterIc);
+                                // initializ(binaryArray);
+                                // counterIc++;
                             }
                             else
                             {
-
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -331,6 +423,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
 
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
@@ -345,7 +442,12 @@ void codeToBinary(char *line,char *ptr)
                         }
                         else
                         {
-
+                            if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
+                                
                             intToBinary2(line,baseLabe(line),binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
@@ -359,15 +461,48 @@ void codeToBinary(char *line,char *ptr)
                             {}
                             else if (strstr(line,", #"))
                             {
-                                numberPrint(line,binaryArray);
+                                
+                                j = 0;
+                                numIndex = 0;
+                                while (line[j]!='#')
+                                {
+                                    j++;
+                                }
+                                j++;
+                                while (line[j]!='\n')
+                                {
+                                    if (line[j] == '+'||line[j] == '-' )
+                                    {
+                                        num[numIndex] = line[j];
+                                        numIndex++;
+                                    }
+                                    else if (line[j] == '0' ||line[j] == '1' ||line[j] == '2' 
+                                    ||line[j] == '3' ||line[j] == '4' ||line[j] == '5' ||line[j] == '6' 
+                                    ||line[j] == '7' ||line[j] == '8' ||line[j] == '9' )
+                                    {
+                                        num[numIndex] = line[j];
+                                        numIndex++;
+                                    }
+                                    j++;
+                                }
+                                
+                                //printf("%s",num);
                                 binaryArray[18] = 1;
+                                intToBinary(num,binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
                                 counterIc++;
+                                memset(num,'\0',5);
+                                numIndex = 0;
+                                
                             }
                             else
                             {
-
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -393,7 +528,7 @@ void codeToBinary(char *line,char *ptr)
                         twoOperands(line,binaryArray);
                         if (strstr(line,"] ,") ||strstr(line,"],"))
                             {
-                                printf("got in");
+                                
                                 wichOgerInLabM(line,binaryArray);
                             }
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -416,7 +551,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
- 
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 /*insert to file*/
                                 initializ(binaryArray);
@@ -442,6 +581,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
 
                                 insertToFile(binaryFile,binaryArray,counterIc);
@@ -456,6 +600,11 @@ void codeToBinary(char *line,char *ptr)
                         }
                         else
                         {
+                            if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
 
                             intToBinary2(line,baseLabe(line),binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
@@ -478,7 +627,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
-
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -494,6 +647,7 @@ void codeToBinary(char *line,char *ptr)
                     }
                     else if (strstr(line,"sub"))
                     {
+                        
                         binaryArray[18] = 1;//print first line
                         binaryArray[2] = 1;
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -528,7 +682,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
-
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -554,6 +712,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
 
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
@@ -580,7 +743,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
- 
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -605,7 +772,7 @@ void codeToBinary(char *line,char *ptr)
                         twoOperands(line,binaryArray);
                         if (strstr(line,"] ,") ||strstr(line,"],"))
                             {
-                                printf("got in");
+                                
                                 wichOgerInLabM(line,binaryArray);
                             }
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -627,7 +794,12 @@ void codeToBinary(char *line,char *ptr)
                                 counterIc++;
                             }
                             else
-                            {
+                            {  
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
  
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
@@ -654,7 +826,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
-
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -668,14 +844,18 @@ void codeToBinary(char *line,char *ptr)
                         }
                         else
                         {
+                            
                             if (baseLabe(line) == 0)
                             {
                                 binaryArray[16] = 1;
+                                insertToPsFile(psF,nameLabele(line),counterIc);
+                                insertToPsFile(psF,nameLabele(line),counterIc+1);
                             }
                             else
                             {
                                 binaryArray[17] = 1;
                             }
+                            
                             intToBinary2(line,baseLabe(line),binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
@@ -704,6 +884,11 @@ void codeToBinary(char *line,char *ptr)
                             }
                             else
                             {
+                                if (baseLabe(line) == 0)
+                                {
+                                    insertToPsFile(psF,nameLabele(line),counterIc);
+                                    insertToPsFile(psF,nameLabele(line),counterIc+1);
+                                }
 
                                 intToBinary2(line,baseLabe(line),binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
@@ -752,6 +937,7 @@ void codeToBinary(char *line,char *ptr)
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
                             counterIc++;
+                            numberNotFu++;
                             j++;
 
                         }
@@ -759,17 +945,17 @@ void codeToBinary(char *line,char *ptr)
                         insertToFile(binaryFile,binaryArray,counterIc);
                         initializ(binaryArray);
                         counterIc++;
+                        numberNotFu++;
 
                     }
                     else if (strstr(line,".data"))
                     {
-
+                        printf("%s",line);
                         binaryArray[18] = 1;
                         if (!strstr(line,","))
                         {
                             j = 0;
                             numIndex = 0;
-                            printf("%s",num);
                             while (line[j]!='\n')
                             {
                                 if (line[j] == '+'||line[j] == '-' )
@@ -786,10 +972,12 @@ void codeToBinary(char *line,char *ptr)
                                 j++;
                             }
                             binaryArray[18] = 1;
+                            
                             intToBinary(num,binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
                             counterIc++;
+                            numberNotFu++;
                             memset(num,'\0',5);
                             
                         }
@@ -818,6 +1006,7 @@ void codeToBinary(char *line,char *ptr)
                                     insertToFile(binaryFile,binaryArray,counterIc);
                                     initializ(binaryArray);
                                     counterIc++;
+                                    numberNotFu++;
                                     memset(num,'\0',5);
                                     numIndex = 0;
                                 }
@@ -830,6 +1019,10 @@ void codeToBinary(char *line,char *ptr)
                 break;
         }  
     }
+    free(num);
+    fclose(binaryFile);
+    fclose(psF);
+    return numberNotFu;
 }
 void printBinToChar(char character,int *binaryArray)
 {
@@ -1513,23 +1706,24 @@ void intToBinary2(char *line,int num,int binaryArray[20])
 }
 void numberPrint(char *line,int *binaryArray)//aske for line and return binary number in line
 {
-    int i = 0 ;
+    int i = 0;
     int j = 0;
-    char *num;
-    num = (char*)malloc(5);
+    char *num1;
+    num1 = (char*)malloc(5);
+    //printf("%s\n",line);
     while (line[i] != '#')
     {
         i++;
     }
     i++;
-    while (line[i] != ' ')
+    while (line[i] != '\n'&&line[i] != ' ')
     {
-        num[j] = line[i];
+        num1[j] = line[i];
         j++;
         i++;
     }
-    intToBinary(num,binaryArray);
-    free(num);
+    intToBinary(num1,binaryArray);
+    free(num1);
 }
 int baseLabe(char *line)// return the base of the lable
 {
@@ -1539,6 +1733,15 @@ int baseLabe(char *line)// return the base of the lable
         i++;
     }
     return tab[i].base;
+}
+char *nameLabele(char *line)// return the base of the lable
+{
+    int i = 0;
+    while (!strstr(line,tab[i].lab))
+    {
+        i++;
+    }
+    return tab[i].lab;
 }
 int offsetLabe(char *line)// return the offset of the lable
 {
@@ -1617,12 +1820,18 @@ int twoOperands(char *line,int *binaryArray)//check wich miun is it
 
     
 }
-void insertToFile(FILE *fptr,int *binaryArray,int counterIc) //this method print to file the binary table 
+int insertToFile(FILE *fptr,int *binaryArray,int counterIc) //this method print to file the binary table 
 {    
     fprintf(fptr,"%d %d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d\n",counterIc,binaryArray[19],binaryArray[18]
     ,binaryArray[17],binaryArray[16],binaryArray[15],binaryArray[14],binaryArray[13],binaryArray[12],binaryArray[11]
     ,binaryArray[10],binaryArray[9],binaryArray[8],binaryArray[7],binaryArray[6],binaryArray[5]
     ,binaryArray[4],binaryArray[3],binaryArray[2],binaryArray[1],binaryArray[0]);
+    return counterIc;
+}
+int insertToPsFile(FILE *fptr,char lableName[30],int counterIc) //this method print to file the binary table 
+{    
+    fprintf(fptr,"%s %d \n",lableName,counterIc);
+    return counterIc;
 }
 int checkOgerInArray(char array[80])//check how much ogrim i have got
 {

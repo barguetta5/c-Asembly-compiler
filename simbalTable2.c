@@ -15,25 +15,26 @@ static int indexExtern = 0;
 static int indexEntry = 0;
 
 
-char *fileToArray();
+char *fileToArray(char newNameFile[30]);
 void checkFuncInArray(char array[80]);
 void insertLabel(char *arrayFile);
-int sizeOfFile(int sz);
+int sizeOfFile(int sz,char newNameFile[30]);
 void icPlus(char line[80]);
 int existLable(char lable[30],char lables[30][30]);
+int checkOgerInArray2(char array[30]);
 
 
 
-int sizeOfFile(int sz)//the size of the file
+int sizeOfFile(int sz,char newNameFile[30])//the size of the file
 {
     FILE *fptr;
-    fptr = fopen("bar2.TXT","r");
+    fptr = fopen(newNameFile,"r");
     fseek(fptr, 0L, SEEK_END);
     sz = ftell(fptr);
     fclose(fptr);
     return sz;
 }
-char *fileToArray() //convert file to array buffer
+char *fileToArray(char newNameFile[30]) //convert file to array buffer
   {
     FILE *fptr;
     char line[lengthLine];
@@ -41,8 +42,8 @@ char *fileToArray() //convert file to array buffer
 	char *ptr;
     int i = 0,j;
     
-    fptr = fopen("bar2.TXT","r");
-    sz = sizeOfFile(sz);
+    fptr = fopen(newNameFile,"r");
+    sz = sizeOfFile(sz,newNameFile);
     buffer = (char*)malloc(1000*sizeof(char));
     memset(buffer,0,1000*sizeof(char));
     ptr = buffer;
@@ -226,7 +227,7 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
             index++;
             i++;
         }
-        ogercount += checkOgerInArray(firstOp) + checkOgerInArray(secondtOp);
+        ogercount += checkOgerInArray2(firstOp) + checkOgerInArray2(secondtOp);
         if(ogercount == 2)
         {
             ic+=2;
@@ -268,7 +269,7 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
             ||strstr(array,"bne")||strstr(array,"jsr")||strstr(array,"red")||strstr(array,"prn"))
     {
         
-        if(checkOgerInArray(array) == 1)
+        if(checkOgerInArray2(array) == 1)
         {
             
             if (array[5]>=65 &&array[5]<=122 &&array[5]!='r')
@@ -337,4 +338,18 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
     
     ic+=1;
     return ;
+}
+int checkOgerInArray2(char array[30])//check how much ogrim i have got
+{
+   
+    int i = 0;
+    static int count;
+    count = 0;
+    if (strstr(array,"r0")||strstr(array,"r1")||strstr(array,"r2")||strstr(array,"r3")||strstr(array,"r4")
+    ||strstr(array,"r5")||strstr(array,"r6")||strstr(array,"r7")||strstr(array,"r8")||strstr(array,"r9")
+    ||strstr(array,"r10")||strstr(array,"r11")||strstr(array,"r12")||strstr(array,"r13")||strstr(array,"r14")||strstr(array,"r15"))
+    {
+            count++;
+    }
+    return count;
 }
