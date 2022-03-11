@@ -29,7 +29,7 @@ void numberRes(char *line,int *binaryArray);
 void entryFile();
 // void main()
 // {
-//     startBinaryPrint("bar.ob");
+//     startBinaryPrint("macro.as");
 // }
 int startBinaryPrint(char newNameFile[30])
 {
@@ -38,10 +38,10 @@ int startBinaryPrint(char newNameFile[30])
     char *ptr;
     int number;
     ptr   = fileToArray(newNameFile);
-    // for (i = 0; i < simbCount; i++)
-    // {
-    //     printTable(tab[i]);
-    // }
+    for (i = 0; i < simbCount; i++)
+    {
+        printTable(tab[i]);
+    }
     number = codeToBinary(line,ptr);
     //printf("%s",newNameFile);
     entryFile();
@@ -93,7 +93,6 @@ int codeToBinary(char *line,char *ptr)
         }
         i++;
         funcType =  recognizeOperands(line);
-        printf("%s\n",line);
         switch (funcType)
         {
             case 0:
@@ -459,33 +458,7 @@ int codeToBinary(char *line,char *ptr)
                             {}
                             else if (strstr(line,", #"))
                             {
-                                // j = 0;
-                                // numIndex = 0;
-                                // while (line[j]!='#')
-                                // {
-                                //     j++;
-                                // }
-                                // j++;
-                                // //printf("%s",line);
-                                // while (line[j]!='\n'&&j<30)
-                                // {
-                                //     if (line[j] == '+'||line[j] == '-' )
-                                //     {
-                                //         num[numIndex] = line[j];
-                                //         numIndex++;
-                                //     }
-                                //     else if (line[j] == '0' ||line[j] == '1' ||line[j] == '2' 
-                                //     ||line[j] == '3' ||line[j] == '4' ||line[j] == '5' ||line[j] == '6' 
-                                //     ||line[j] == '7' ||line[j] == '8' ||line[j] == '9' )
-                                //     {
-                                //         num[numIndex] = line[j];
-                                //         numIndex++;
-                                //     }
-                                //     j++;
-                                //     //printf("%d",j);
-                                // }
-                                // binaryArray[18] = 1;
-                                // intToBinary(num,binaryArray);
+
                                 numberRes(line,binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
@@ -769,8 +742,7 @@ int codeToBinary(char *line,char *ptr)
                         binaryArray[18] = 1;
                         twoOperands(line,binaryArray);
                         if (strstr(line,"] ,") ||strstr(line,"],"))
-                            {
-                                
+                            { 
                                 wichOgerInLabM(line,binaryArray);
                             }
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -853,7 +825,6 @@ int codeToBinary(char *line,char *ptr)
                             {
                                 binaryArray[17] = 1;
                             }
-                            
                             intToBinary2(line,baseLabe(line),binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
@@ -948,7 +919,6 @@ int codeToBinary(char *line,char *ptr)
                     }
                     else if (strstr(line,".data"))
                     {
-                        // printf("%s",line);
                         binaryArray[18] = 1;
                         if (!strstr(line,","))
                         {
@@ -970,7 +940,6 @@ int codeToBinary(char *line,char *ptr)
                                 j++;
                             }
                             binaryArray[18] = 1;
-                            
                             intToBinary(num,binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
@@ -983,7 +952,8 @@ int codeToBinary(char *line,char *ptr)
                         {
                             j = 0;
                             numIndex = 0;
-                            while (line[j]!='\n' && j<30)
+                            memset(num,'\0',5);
+                            while (line[j]!='\n' && j<strlen(line))
                             {
                                 if (line[j] == '+'||line[j] == '-' )
                                 {
@@ -996,8 +966,7 @@ int codeToBinary(char *line,char *ptr)
                                     num[numIndex] = line[j];
                                     numIndex++;
                                 }
-                                
-                                if (line[j] == ',' || line[j+1] == '\n')
+                                if (line[j] == ',' || j == strlen(line)-1)
                                 {
                                     binaryArray[18] = 1;
                                     intToBinary(num,binaryArray);

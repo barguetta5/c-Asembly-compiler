@@ -17,13 +17,11 @@ static int indexEntry = 0;
 
 char *fileToArray(char newNameFile[30]);
 void checkFuncInArray(char array[80]);
-void insertLabel(char *arrayFile);
+void insertLabel(char *arrayFile,char newNameFile[30]);
 int sizeOfFile(int sz,char newNameFile[30]);
 void icPlus(char line[80]);
 int existLable(char lable[30],char lables[30][30]);
 int checkOgerInArray2(char array[30]);
-
-
 
 int sizeOfFile(int sz,char newNameFile[30])//the size of the file
 {
@@ -58,14 +56,13 @@ char *fileToArray(char newNameFile[30]) //convert file to array buffer
     // fptr =  fopen("bar2.TXT","w");
     // fprintf(fptr,"%s",buffer);
     // fclose(fptr);
-    insertLabel(buffer);//mybe this is the problam
+    insertLabel(buffer,newNameFile);//mybe this is the problam
     return buffer;
   } 
-void insertLabel(char *arrayFile)//get the file in array
+void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
 { 
-    
     FILE *fptr;
-    fptr = fopen("bar2.txt","r");
+    fptr = fopen(newNameFile,"r");
     int i = 0, j = 0;
     int icIndex = 0;
     int base ,offset;
@@ -106,6 +103,7 @@ void insertLabel(char *arrayFile)//get the file in array
         }
         else if (arrayFile[i] == '.' && arrayFile[i+1] == 'e'&& arrayFile[i+2] == 'n')//finde entry lable
         {
+            //printf("%s",arrayFile);
             while (arrayFile[i] != ' ')//get to the space after the word
             {
                 i++;
@@ -130,6 +128,7 @@ void insertLabel(char *arrayFile)//get the file in array
         }  
         else if (arrayFile[i] == ':')
         {
+            //printf("%s",arrayFile);
             if(arrayFile[i+2] == '.')
                 code = 3;
             else
@@ -188,6 +187,7 @@ void icPlus(char line[80])//pass the : in the text
     char newLine[80];
     if (strstr(line,":"))
     {
+        //printf("%s",line);
         while (line[i]!=':')
         {
             i++;

@@ -1,1 +1,4 @@
-w
+void main()
+{
+    startBinaryPrint("macro.as");
+}
