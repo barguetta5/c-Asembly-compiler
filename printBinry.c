@@ -25,6 +25,7 @@ int startBinaryPrint(char newNameFile[30]);
 int insertToPsFile(FILE *fptr,char lableName[30],int counterIc);
 char *nameLabele(char *line);
 int baseLabe(char *line);
+void numberRes(char *line,int *binaryArray);
 void entryFile();
 // void main()
 // {
@@ -42,6 +43,7 @@ int startBinaryPrint(char newNameFile[30])
     //     printTable(tab[i]);
     // }
     number = codeToBinary(line,ptr);
+    //printf("%s",newNameFile);
     entryFile();
     free(line);
     free(ptr);
@@ -91,7 +93,7 @@ int codeToBinary(char *line,char *ptr)
         }
         i++;
         funcType =  recognizeOperands(line);
-        //printf("%s\n",line);
+        printf("%s\n",line);
         switch (funcType)
         {
             case 0:
@@ -324,7 +326,6 @@ int codeToBinary(char *line,char *ptr)
                     }
                     else if (strstr(line,"cmp"))
                     {
-                        
                         binaryArray[18] = 1;//print first line
                         binaryArray[1] = 1;
                         insertToFile(binaryFile,binaryArray,counterIc);
@@ -332,7 +333,6 @@ int codeToBinary(char *line,char *ptr)
                         counterIc++;
                         binaryArray[18] = 1;
                         twoOperands(line,binaryArray);
-                        
                         if (strstr(line,"] ,") ||strstr(line,"],"))
                             {
                                 
@@ -362,7 +362,7 @@ int codeToBinary(char *line,char *ptr)
                                     j++;
                                 }
                                 j++;
-                                while (line[j]!='\n')
+                                while (line[j]!='\n'&&j<30)
                                 {
                                     if (line[j] == '+'||line[j] == '-' )
                                     {
@@ -377,7 +377,6 @@ int codeToBinary(char *line,char *ptr)
                                         numIndex++;
                                     }
                                 }
-                                //printf("%s",num);
                                 binaryArray[18] = 1;
                                 intToBinary(num,binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
@@ -447,7 +446,6 @@ int codeToBinary(char *line,char *ptr)
                                     insertToPsFile(psF,nameLabele(line),counterIc);
                                     insertToPsFile(psF,nameLabele(line),counterIc+1);
                                 }
-                                
                             intToBinary2(line,baseLabe(line),binaryArray);
                             insertToFile(binaryFile,binaryArray,counterIc);
                             initializ(binaryArray);
@@ -461,39 +459,39 @@ int codeToBinary(char *line,char *ptr)
                             {}
                             else if (strstr(line,", #"))
                             {
-                                
-                                j = 0;
-                                numIndex = 0;
-                                while (line[j]!='#')
-                                {
-                                    j++;
-                                }
-                                j++;
-                                while (line[j]!='\n')
-                                {
-                                    if (line[j] == '+'||line[j] == '-' )
-                                    {
-                                        num[numIndex] = line[j];
-                                        numIndex++;
-                                    }
-                                    else if (line[j] == '0' ||line[j] == '1' ||line[j] == '2' 
-                                    ||line[j] == '3' ||line[j] == '4' ||line[j] == '5' ||line[j] == '6' 
-                                    ||line[j] == '7' ||line[j] == '8' ||line[j] == '9' )
-                                    {
-                                        num[numIndex] = line[j];
-                                        numIndex++;
-                                    }
-                                    j++;
-                                }
-                                
-                                //printf("%s",num);
-                                binaryArray[18] = 1;
-                                intToBinary(num,binaryArray);
+                                // j = 0;
+                                // numIndex = 0;
+                                // while (line[j]!='#')
+                                // {
+                                //     j++;
+                                // }
+                                // j++;
+                                // //printf("%s",line);
+                                // while (line[j]!='\n'&&j<30)
+                                // {
+                                //     if (line[j] == '+'||line[j] == '-' )
+                                //     {
+                                //         num[numIndex] = line[j];
+                                //         numIndex++;
+                                //     }
+                                //     else if (line[j] == '0' ||line[j] == '1' ||line[j] == '2' 
+                                //     ||line[j] == '3' ||line[j] == '4' ||line[j] == '5' ||line[j] == '6' 
+                                //     ||line[j] == '7' ||line[j] == '8' ||line[j] == '9' )
+                                //     {
+                                //         num[numIndex] = line[j];
+                                //         numIndex++;
+                                //     }
+                                //     j++;
+                                //     //printf("%d",j);
+                                // }
+                                // binaryArray[18] = 1;
+                                // intToBinary(num,binaryArray);
+                                numberRes(line,binaryArray);
                                 insertToFile(binaryFile,binaryArray,counterIc);
                                 initializ(binaryArray);
                                 counterIc++;
-                                memset(num,'\0',5);
-                                numIndex = 0;
+                                //memset(num,'\0',5);
+                                //numIndex = 0;
                                 
                             }
                             else
@@ -950,13 +948,13 @@ int codeToBinary(char *line,char *ptr)
                     }
                     else if (strstr(line,".data"))
                     {
-                        printf("%s",line);
+                        // printf("%s",line);
                         binaryArray[18] = 1;
                         if (!strstr(line,","))
                         {
                             j = 0;
                             numIndex = 0;
-                            while (line[j]!='\n')
+                            while (line[j]!='\n' && j<30)
                             {
                                 if (line[j] == '+'||line[j] == '-' )
                                 {
@@ -985,7 +983,7 @@ int codeToBinary(char *line,char *ptr)
                         {
                             j = 0;
                             numIndex = 0;
-                            while (line[j]!='\n')
+                            while (line[j]!='\n' && j<30)
                             {
                                 if (line[j] == '+'||line[j] == '-' )
                                 {
@@ -1847,6 +1845,37 @@ int checkOgerInArray(char array[80])//check how much ogrim i have got
     }
     return count;
 }
+void numberRes(char *line,int *binaryArray)
+    {
+        int j = 0 ;
+        char num[5];
+        int numIndex = 0;
+            while (line[j]!='#')
+        {
+            j++;
+        }
+        j++;
+        //printf("%s",line);
+        while (line[j]!='\n'&&j<30)
+        {
+            if (line[j] == '+'||line[j] == '-' )
+            {
+                num[numIndex] = line[j];
+                numIndex++;
+            }
+            else if (line[j] == '0' ||line[j] == '1' ||line[j] == '2' 
+            ||line[j] == '3' ||line[j] == '4' ||line[j] == '5' ||line[j] == '6' 
+            ||line[j] == '7' ||line[j] == '8' ||line[j] == '9' )
+            {
+                num[numIndex] = line[j];
+                numIndex++;
+            }
+            j++;
+            //printf("%d",j);
+        }
+        binaryArray[18] = 1;
+        intToBinary(num,binaryArray);
+    }
 void oneOperandFunc(char *line,int *binaryArray)
 { 
     if (strstr(line,"clr"))

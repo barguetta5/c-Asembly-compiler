@@ -1,34 +1,36 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//#include "simbalTable2.c"
 #include "printHexa.c"
-//#include "printPs.c"
 #include "erorFinde.c"
+#include "swapMacro.c"
 
 
 void inToFile(FILE *nFile,char c);
 void rebuild(char nameFile[30] , char newNameFile[30]);
 void main()
 {
+    Node *head = NULL;
+
     char nameFile[30];
     char newNameFile[30];
     char endText[3] = ".as";
     char endNewText[3] = ".ob";
-    printf("please enter name of file withous the type of the file");
-    scanf("%s",&nameFile);
+    // printf("please enter name of file withous the type of the file");
+    // scanf("%s",&nameFile);
+    strcpy(nameFile,"bar");
     strcpy(newNameFile,nameFile);
     strncat(newNameFile,endNewText,3);
     strncat(nameFile,endText,3);
-    // //macro function
-    //printf("%s\n",newNameFile);
-    rebuild(nameFile,newNameFile);
-    if (!erorFile(newNameFile))
+
+    rebuild(nameFile,newNameFile);//this func from this file
+    findeMacro(head,newNameFile);//this func from swapmacro.c
+    if (!erorFile(newNameFile))//this func from printHexa.c
     {
         printf("not work");
         exit(0);
     }
-    getLine(newNameFile);
+    getLine(newNameFile);//this func from printHexa.c
 }
 void rebuild(char nameFile[30],char newNameFile[30])
 {
@@ -46,8 +48,12 @@ void rebuild(char nameFile[30],char newNameFile[30])
             {
                 break;
             } 
+            if (c=='\n')
+            {
+                while ((c = fgetc(fptr)) && c=='\n' || c==' '|| c=='\t');
+            }
         }
-        else if (c == '\n')
+        else if (i!=0 && c == '\n')
         {
             i = 0;
         }
@@ -55,6 +61,7 @@ void rebuild(char nameFile[30],char newNameFile[30])
         {
             while ((c = fgetc(fptr))!= EOF && c!='\n')
             {i++;}
+            i = 0;
             c = fgetc(fptr);
         }
         else if (c == '\t')
@@ -68,9 +75,14 @@ void rebuild(char nameFile[30],char newNameFile[30])
         }
         else if (c == ' ')
         {
-            inToFile(nFile, c);
+            if(i != 0)
+                inToFile(nFile, c);
             while ((c = fgetc(fptr))!= EOF && c!='\n' && (c == ' ' || c == '\t'))
             {i++;}
+            if (c == '\n')
+            {
+                i = 0;
+            }     
         }
         else
         {i++;} 
