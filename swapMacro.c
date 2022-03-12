@@ -4,23 +4,17 @@
 #include "macroNode.c"
 
 
-// int lengthLine1 = 81;
-// int sizeName = 30;
+#define lengthLine1  81
+#define  sizeName  30
 
-void findeMacro(Node *head,char nameFile[30]);
-void replaceMacro(Node *head,char newNameFile[30]);
+void findeMacro(Node *head,char nameFile[sizeName]);
+void replaceMacro(Node *head,char newNameFile[sizeName]);
 
-// int main(void)
-// {
-//     Node *head = NULL;
-//     findeMacro(head,"macro.as");
-//     return 0;
-// }
 
-void findeMacro(Node *head,char newNameFile[30]) //convert file to array buffer
+void findeMacro(Node *head,char newNameFile[sizeName])
   {
     FILE *fptr;
-    char line[81];
+    char line[lengthLine1];
     char *buffer;
 	char *ptr;
     char *word;
@@ -29,16 +23,16 @@ void findeMacro(Node *head,char newNameFile[30]) //convert file to array buffer
     
     fptr = fopen(newNameFile,"r");
     buffer = (char*)malloc(1000*sizeof(char));
-    word = (char*)malloc(30);
+    word = (char*)malloc(sizeName);
     macroLines = (char*)malloc(1000*sizeof(char));
     memset(buffer,0,1000*sizeof(char));
-    memset(macroLines,0,81*5);
-    memset(word,0,30);
+    memset(macroLines,0,lengthLine1*5);
+    memset(word,0,sizeName);
     ptr = buffer;
     while (!feof(fptr))
     {
-        fgets(line,81,fptr);
-        if (strstr(line,"macro"))
+        fgets(line,lengthLine1,fptr);
+        if (strstr(line,"macro"))//check if there is macro in and line and save the name of it
         {
             i = 6 ;
             while (line[i] != '\n'&& line[i] != ' ')
@@ -49,18 +43,17 @@ void findeMacro(Node *head,char newNameFile[30]) //convert file to array buffer
             }
             word[j] = '\0';
             j = 0;
-            fgets(line,81,fptr);
-            while (!strstr(line,"endm"))
+            fgets(line,lengthLine1,fptr);
+            while (!strstr(line,"endm")) // insert macro's lines
             {
                 strcat(macroLines,line);
-                fgets(line,81,fptr);
+                fgets(line,lengthLine1,fptr);
             }
             insert(&head, word,macroLines);
-            memset(word,0,30);
-            memset(macroLines,0,81*5);
+            memset(word,0,sizeName);
+            memset(macroLines,0,lengthLine1*5);
         }   
     }
-    
     fclose(fptr);
     free(buffer);
     free(word);
@@ -68,10 +61,10 @@ void findeMacro(Node *head,char newNameFile[30]) //convert file to array buffer
     replaceMacro(head,newNameFile);
     
   } 
-void replaceMacro(Node *head,char newNameFile[30])
+void replaceMacro(Node *head,char newNameFile[sizeName])
   {
     FILE *fptr;
-    char line[81];
+    char line[lengthLine1];
     char *buffer;
 	char *ptr;
     int i = 0,j;
@@ -83,21 +76,21 @@ void replaceMacro(Node *head,char newNameFile[30])
     //printList(head);
     while (!feof(fptr))
     {
-        fgets(line,81,fptr);
+        fgets(line,lengthLine1,fptr);
         if (strstr(line,"macro"))
         {
             while (!strstr(line,"endm"))
             {
-                fgets(line,81,fptr);
+                fgets(line,lengthLine1,fptr);
             }
-            fgets(line,81,fptr);
+            fgets(line,lengthLine1,fptr);
             
         }
-        if (macroExist(head,line)!=0)
+        if (macroExist(head,line)!=NULL)
         {
-            strcpy(ptr,head->line);
+            strcpy(ptr,macroExist(head,line));
             //printf("%s\n\n",ptr);
-            ptr += strlen(head->line);
+            ptr += strlen(macroExist(head,line));
             //printf("%s\n\n",ptr);
         }
         else

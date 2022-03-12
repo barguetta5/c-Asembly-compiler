@@ -3,11 +3,12 @@
 #include "printBinry.c"
 
 #define lengthLine 81
+#define sizeNameFile 30
 
 char numberToHexca(int number);
 int binaryConvert(char line[4]);
 void insertToFile2(FILE *fptr,char hexa[18]);
-void getLine(char newNameFile[30]);
+void getLine(char newNameFile[sizeName]);
 void insertHexa(char line[lengthLine],FILE *newF);
 int howManyLines();
 void firstInsertToFile(FILE *fptr,int funcNumber,int MethodNumber);
@@ -16,7 +17,7 @@ void firstInsertToFile(FILE *fptr,int funcNumber,int MethodNumber);
 //     getLine(char newNameFile[30]);
 // }
 
-void getLine(char newNameFile[30])//get line from binary file and convert to hexa decimal
+void getLine(char newNameFile[sizeName])//get line from binary file and convert to hexa decimal
 {
     FILE *fptr;
     FILE *newF;
@@ -202,13 +203,13 @@ char numberToHexca(int number)
 int howManyLines()
 {
     FILE *fptr;
-    char line[80];
+    char line[sizeName];
     int count = -1;
     int lastLineNumber;
     fptr = fopen("binaryFile.txt ","r");
      while (!feof(fptr))
     {
-        fgets(line,81,fptr);
+        fgets(line,sizeName,fptr);
         count++;
     }
     fclose(fptr);

@@ -4,6 +4,7 @@
 #include "typedefSimble.c"
 
 #define lengthLine 81
+#define sizeName 30
 
 static simbls tab[15];//array of all the simbles
 static int simbCount = 0;
@@ -15,15 +16,15 @@ static int indexExtern = 0;
 static int indexEntry = 0;
 
 
-char *fileToArray(char newNameFile[30]);
-void checkFuncInArray(char array[80]);
-void insertLabel(char *arrayFile,char newNameFile[30]);
-int sizeOfFile(int sz,char newNameFile[30]);
-void icPlus(char line[80]);
-int existLable(char lable[30],char lables[30][30]);
-int checkOgerInArray2(char array[30]);
+char *fileToArray(char newNameFile[sizeName]);
+void checkFuncInArray(char array[lengthLine]);
+void insertLabel(char *arrayFile,char newNameFile[sizeName]);
+int sizeOfFile(int sz,char newNameFile[sizeName]);
+void icPlus(char line[lengthLine]);
+int existLable(char lable[sizeName],char lables[sizeName][sizeName]);
+int checkOgerInArray2(char array[sizeName]);
 
-int sizeOfFile(int sz,char newNameFile[30])//the size of the file
+int sizeOfFile(int sz,char newNameFile[sizeName])//the size of the file
 {
     FILE *fptr;
     fptr = fopen(newNameFile,"r");
@@ -32,7 +33,7 @@ int sizeOfFile(int sz,char newNameFile[30])//the size of the file
     fclose(fptr);
     return sz;
 }
-char *fileToArray(char newNameFile[30]) //convert file to array buffer
+char *fileToArray(char newNameFile[sizeName]) //convert file to array buffer
   {
     FILE *fptr;
     char line[lengthLine];
@@ -59,7 +60,7 @@ char *fileToArray(char newNameFile[30]) //convert file to array buffer
     insertLabel(buffer,newNameFile);//mybe this is the problam
     return buffer;
   } 
-void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
+void insertLabel(char *arrayFile,char newNameFile[sizeName])
 { 
     FILE *fptr;
     fptr = fopen(newNameFile,"r");
@@ -67,8 +68,8 @@ void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
     int icIndex = 0;
     int base ,offset;
     char *lable;
-    char icLine[80];
-    lable = (char*)malloc(30);
+    char icLine[lengthLine];
+    lable = (char*)malloc(sizeName);
     int code;
     for (i = 0; i < sz; i++)
     {
@@ -79,11 +80,11 @@ void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
         memset(lable,0,30);
         if (arrayFile[i] == '.' && arrayFile[i+1] == 'e'&& arrayFile[i+2] == 'x')//finde entry lable
         {
-            while (arrayFile[i] != ' ')//get to the space after the word
+            while (arrayFile[i] != ' ')
             {
                 i++;
             }
-            i++;// pass the space
+            i++;
             while (arrayFile[i] != '\n' && i<sz)//insert label
             {
                 lable[j] = arrayFile[i];
@@ -103,12 +104,11 @@ void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
         }
         else if (arrayFile[i] == '.' && arrayFile[i+1] == 'e'&& arrayFile[i+2] == 'n')//finde entry lable
         {
-            //printf("%s",arrayFile);
-            while (arrayFile[i] != ' ')//get to the space after the word
+            while (arrayFile[i] != ' ')
             {
                 i++;
             }
-            i++;// pass the space
+            i++;
             while (arrayFile[i] != '\n'&&arrayFile[i] != ' ')//insert label
             {
                 lable[j] = arrayFile[i];
@@ -128,7 +128,6 @@ void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
         }  
         else if (arrayFile[i] == ':')
         {
-            //printf("%s",arrayFile);
             if(arrayFile[i+2] == '.')
                 code = 3;
             else
@@ -161,7 +160,7 @@ void insertLabel(char *arrayFile,char newNameFile[30])//get the file in array
     }
     fclose(fptr);
 }
-int existLable(char lable[30],char lables[30][30])
+int existLable(char lable[sizeName],char lables[sizeName][sizeName])
 {
     static int index = 0;
     int i = 0;
@@ -180,19 +179,18 @@ int existLable(char lable[30],char lables[30][30])
     }
     return boolean;
 }
-void icPlus(char line[80])//pass the : in the text
+void icPlus(char line[lengthLine])//pass the : in the text
 {
     int i = 0;
     int newL = 0;
     char newLine[80];
     if (strstr(line,":"))
     {
-        //printf("%s",line);
         while (line[i]!=':')
         {
             i++;
         }
-        i+=2;//pass the space after ;
+        i+=2;
         while (line[i]!='\n'){
             newLine[newL] = line[i];
             i++;
@@ -203,7 +201,7 @@ void icPlus(char line[80])//pass the : in the text
     else
       checkFuncInArray(line);
 }
-void checkFuncInArray(char array[80])//return how many ic i need to add to my counter
+void checkFuncInArray(char array[lengthLine])//return how many ic i need to add to my counter,first pass.
 {
     char firstOp[30];
     char secondtOp[30];
@@ -227,7 +225,7 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
             index++;
             i++;
         }
-        ogercount += checkOgerInArray2(firstOp) + checkOgerInArray2(secondtOp);
+        ogercount += checkOgerInArray2(firstOp) + checkOgerInArray2(secondtOp);//check how many ogrim in the function
         if(ogercount == 2)
         {
             ic+=2;
@@ -291,7 +289,7 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
             return ;
         }
     }
-    else if (strstr(array,".data"))//check the ic of .data
+    else if (strstr(array,".data"))
     {
         if (!strstr(array,","))
         {
@@ -312,7 +310,7 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
         ic+=countC;
         return ;
     }
-    else if (strstr(array,".string"))//check the ic of .string
+    else if (strstr(array,".string"))
     {
         i = 3;
         while (array[i] != 'i'&&array[i+1] != 'n'&&array[i+2] != 'g')
@@ -339,7 +337,7 @@ void checkFuncInArray(char array[80])//return how many ic i need to add to my co
     ic+=1;
     return ;
 }
-int checkOgerInArray2(char array[30])//check how much ogrim i have got
+int checkOgerInArray2(char array[sizeName])//check how much ogrim i have got
 {
    
     int i = 0;

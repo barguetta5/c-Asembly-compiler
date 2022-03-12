@@ -2,36 +2,38 @@
 #include <stdlib.h>
 #include "simbalTable2.c"
 
+#define binarryArraySize 20
+#define sizeName 30
+#define sizeLines 80
+
 void printBinToChar(char character,int *binaryArray);
 int codeToBinary(char *line,char *ptr);
 int recognizeOperands(char *array);
 int wichOger(char *line,int *binaryArray);
 int wichOgerMacor(char *line,int *binaryArray);
 int wichOgerYaad(char *line,int *binaryArray);
-void initializ(int binaryArray[20]);
-void initializNegativ(int binaryArray[20]);
-void intToBinary(char num[5],int binaryArray[20]);
-void intToBinary2(char *line,int num,int binaryArray[20]);
+void initializ(int binaryArray[binarryArraySize]);
+void initializNegativ(int binaryArray[binarryArraySize]);
+void intToBinary(char num[5],int binaryArray[binarryArraySize]);
+void intToBinary2(char *line,int num,int binaryArray[binarryArraySize]);
 void numberPrint(char *line,int *binaryArray);
 int baseLabe(char *line);
 int offsetLabe(char *line);
 int twoOperands(char *line,int *binaryArray);
 int insertToFile(FILE *fptr,int *binaryArray,int counterIc);
-int checkOgerInArray(char array[80]);
+int checkOgerInArray(char array[sizeLines]);
 void oneOperandFunc(char *line,int *binaryArray);
 int wichOgerInLab(char *line,int *binaryArray);
 int wichOgerInLabM(char *line,int *binaryArray);
-int startBinaryPrint(char newNameFile[30]);
-int insertToPsFile(FILE *fptr,char lableName[30],int counterIc);
+int startBinaryPrint(char newNameFile[sizeName]);
+int insertToPsFile(FILE *fptr,char lableName[sizeName],int counterIc);
 char *nameLabele(char *line);
 int baseLabe(char *line);
 void numberRes(char *line,int *binaryArray);
 void entryFile();
-// void main()
-// {
-//     startBinaryPrint("macro.as");
-// }
-int startBinaryPrint(char newNameFile[30])
+
+
+int startBinaryPrint(char newNameFile[sizeName])
 {
     int i;
     char *line = (char*)malloc(80*sizeof(char));
@@ -43,7 +45,6 @@ int startBinaryPrint(char newNameFile[30])
         printTable(tab[i]);
     }
     number = codeToBinary(line,ptr);
-    //printf("%s",newNameFile);
     entryFile();
     free(line);
     free(ptr);
@@ -67,7 +68,7 @@ int codeToBinary(char *line,char *ptr)
 {
     FILE *binaryFile;
     FILE * psF;
-    int binaryArray[20];
+    int binaryArray[binarryArraySize];
     char *num;
     int numIndex;
     int funcType;
@@ -79,7 +80,7 @@ int codeToBinary(char *line,char *ptr)
     binaryFile = fopen("binaryFile.txt", "w");
     psF = fopen("ps.ext", "w");
     num = (char*)malloc(5);
-    initializ(binaryArray);
+    initializ(binaryArray);//initialized the array to zeroes
     while (i<sz)
     {
         memset(line,'\0',80*sizeof(char));
@@ -1005,7 +1006,6 @@ void printBinToChar(char character,int *binaryArray)
         }
         
     }
-
 }
 int recognizeOperands(char *array)
 {
@@ -1586,14 +1586,14 @@ int wichOgerInLab(char *line,int *binaryArray)
         return 15;
     }
 }
-void initializ(int binaryArray[20])
+void initializ(int binaryArray[binarryArraySize])
 {
     for(int i = 0;i<20;i++)
     {
         binaryArray[i] = 0;
     }
 }
-void initializNegativ(int binaryArray[20])
+void initializNegativ(int binaryArray[binarryArraySize])
 {
     for(int i = 0;i<17;i++)
     {
@@ -1604,7 +1604,7 @@ void initializNegativ(int binaryArray[20])
     binaryArray[17] = 0;
     binaryArray[16] = 0;
 }
-void intToBinary(char num[5],int binaryArray[20])
+void intToBinary(char num[5],int binaryArray[binarryArraySize])
 {
     int number;
     int i = 0;
@@ -1635,7 +1635,7 @@ void intToBinary(char num[5],int binaryArray[20])
         number = number / 2;
     }
 }
-void intToBinary2(char *line,int num,int binaryArray[20])
+void intToBinary2(char *line,int num,int binaryArray[binarryArraySize])
 {
     int i = 0;
     int negative = 0;
@@ -1677,7 +1677,6 @@ void numberPrint(char *line,int *binaryArray)//aske for line and return binary n
     int j = 0;
     char *num1;
     num1 = (char*)malloc(5);
-    //printf("%s\n",line);
     while (line[i] != '#')
     {
         i++;
@@ -1795,12 +1794,12 @@ int insertToFile(FILE *fptr,int *binaryArray,int counterIc) //this method print 
     ,binaryArray[4],binaryArray[3],binaryArray[2],binaryArray[1],binaryArray[0]);
     return counterIc;
 }
-int insertToPsFile(FILE *fptr,char lableName[30],int counterIc) //this method print to file the binary table 
+int insertToPsFile(FILE *fptr,char lableName[sizeName],int counterIc) //this method print to file the binary table 
 {    
     fprintf(fptr,"%s %d \n",lableName,counterIc);
     return counterIc;
 }
-int checkOgerInArray(char array[80])//check how much ogrim i have got
+int checkOgerInArray(char array[sizeLines])//check how much ogrim i have got
 {
    
     int i = 0;
@@ -1824,7 +1823,6 @@ void numberRes(char *line,int *binaryArray)
             j++;
         }
         j++;
-        //printf("%s",line);
         while (line[j]!='\n'&&j<30)
         {
             if (line[j] == '+'||line[j] == '-' )

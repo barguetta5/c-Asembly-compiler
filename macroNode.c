@@ -10,10 +10,10 @@ typedef struct node
 void insert(Node** pstart,char *name,char *newLine)
 {
 	Node *ptr;
-  char *copyName = malloc(sizeof(name));
-  char *copyLine = malloc(sizeof(newLine));
-  strcpy(copyName,name);
-  strcpy(copyLine,newLine);
+	char *copyName = malloc(sizeof(name));
+	char *copyLine = malloc(sizeof(newLine));
+	strcpy(copyName,name);
+	strcpy(copyLine,newLine);
 	if (*pstart == NULL)
 	{
 		*pstart = (Node *)malloc(sizeof(Node));
@@ -40,20 +40,19 @@ void printList(Node *head) {
         head = head->next;
     }
 }
-int macroExist(Node *head,char *s)
+char *macroExist(Node *head,char *s)
 {
 	int counter = 1;
 	while (head != NULL)
 	{	
-    if(head->macroName[0] == s[0] &&head->macroName[1] == s[1])//strcmp not working to me strcmp(head->macroNmae,s) == 0
-		{
-      //printf("\nthis is  %d\n",counter);
-      	return counter; 
-    }
+		if(head->macroName[0] == s[0] &&head->macroName[1] == s[1])
+		{	
+			return head->line; 
+		}
     counter++;
 		head = head->next;
 	}
-	return 0;
+	return NULL;
 }
 void freeNode(Node *head)
 {

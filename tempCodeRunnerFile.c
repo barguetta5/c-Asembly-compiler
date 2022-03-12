@@ -1,4 +1,1 @@
-void main()
-{
-    startBinaryPrint("macro.as");
-}
+#define sizeNameFile 30

@@ -5,20 +5,20 @@
 #include "erorFinde.c"
 #include "swapMacro.c"
 
+#define sizeNameFile 30
 
 void inToFile(FILE *nFile,char c);
-void rebuild(char nameFile[30] , char newNameFile[30]);
+void rebuild(char nameFile[sizeName] , char newNameFile[sizeName]);
 void main()
 {
     Node *head = NULL;
 
-    char nameFile[30];
-    char newNameFile[30];
+    char nameFile[sizeName];
+    char newNameFile[sizeName];
     char endText[3] = ".as";
     char endNewText[3] = ".ob";
-    // printf("please enter name of file withous the type of the file");
-    // scanf("%s",&nameFile);
-    strcpy(nameFile,"bar");
+    printf("please enter name of file withous the type of the file");
+    scanf("%s",&nameFile);
     strcpy(newNameFile,nameFile);
     strncat(newNameFile,endNewText,3);
     strncat(nameFile,endText,3);
@@ -32,7 +32,7 @@ void main()
     }
     getLine(newNameFile);//this func from printHexa.c
 }
-void rebuild(char nameFile[30],char newNameFile[30])
+void rebuild(char nameFile[sizeName],char newNameFile[sizeName])
 {
     FILE *fptr;
     FILE *nFile;
