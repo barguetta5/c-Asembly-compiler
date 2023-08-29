@@ -27,7 +27,7 @@ void main()
     findeMacro(head,newNameFile);//this func from swapmacro.c
     if (!erorFile(newNameFile))//this func from printHexa.c
     {
-        printf("not work");
+        printf("the file didnt open\n or there is compilation eror");
         exit(0);
     }
     getLine(newNameFile);//this func from printHexa.c

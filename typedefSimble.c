@@ -42,3 +42,19 @@ int exist(simbls *lables,char lab[30],int len,int code,int value,int base,int of
   }
   return 0;
 }
+
+
+
+
+
+
+
+static savedElectric;
+static userSet = 200;
+float get_nextMap(float temp,float Amin, float Amax)
+{
+    float distance = Amax - Amin; //calculate the distance between min and max amper
+    distance = distance /userSet; // 
+    return Amin + distance;
+
+} 
